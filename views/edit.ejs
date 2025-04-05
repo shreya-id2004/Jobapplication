@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/add.css">
+</head>
+
+<body>
+    <div class="box">
+        <h1>Edit the Job</h1>
+        <form action="/edit/<%=job.id%>" method="post">
+            <label for="jobname">Job Position:</label>
+            <input type="text" name="jobname"  value="<%= job.jobname %>"><br>
+            <label for="link">Job Link:</label>
+            <input type="url" id="link" name="link" value="<%= job.link %>"><br>
+            <label for="deadline">Deadline:</label>
+            <input type="date" id="deadline" name="deadline" value="<%= job.deadline.toISOString().split('T')[0] %>" required>
+            <button type="submit">Update</button>
+        </form>
+        <button><a href="/">Cancel</a></button>
+    </div>
+    
+</body>
+
+</html>
