@@ -1,14 +1,32 @@
 const express = require('express');
 const app = express();
 
+require('dotenv').config();
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const flash = require('express-flash');
 const session = require('express-session');
+const mongoStore = require('connect-mongo');
 const nodemailer = require('nodemailer');
 
+const dbUrl = process.env.ATLASDB_URL;
+
+const store = mongoStore.create({
+    mongoUrl: dbUrl,
+    crypto :{
+        secret: 'secret',
+    },
+    touchAfter: 24 * 60 * 60,
+})
+
+store.on("error",()=>{
+    console.log("Mongo session store error");
+});
+
 app.use(session({
+    store :store,
     secret: 'secret',
     resave: false,
     saveUninitialized: true
@@ -20,7 +38,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-//const dbUrl = process.env.ATLASDB_URL;
+
 
 const mongoose = require('mongoose');
 main()
@@ -32,7 +50,7 @@ main()
     })
 
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/jobapp');
+    await mongoose.connect(dbUrl);
 }
 //'mongodb://127.0.0.1:27017/jobapp'
 
@@ -61,12 +79,21 @@ const transporter = nodemailer.createTransport({
     }
 })
 
-const sendEmailReminder = (job) => {
+const sendEmailReminder = (User, job) => {
     const mailOptions = {
         from: 'shreyaravisha2004@gmail.com',
-        to: 'rekharavisha2004@gmail.com',
-        subject: `Job Application Reminder: ${job.jobname}`,
-        text: `You have a job application deadline for ${job.jobname} at ${job.company}. Please apply before ${job.deadline}.`
+        to: User.email,
+        subject: `Reminder: ${job.jobname} Deadline Approaching`,
+        html: `
+            <h2>Job Application Reminder</h2>
+            <p>Hi ${user.username},</p>
+            <table border="1">
+                <tr><td>Job</td><td>${job.jobname}</td></tr>
+                <tr><td>Company</td><td>${job.company}</td></tr>
+                <tr><td>Deadline</td><td>${job.deadline}</td></tr>
+            </table>
+            <p>Apply soon!</p>
+        `
     };
     transporter.sendMail(mailOptions, (err, info) => {
         if (err) {

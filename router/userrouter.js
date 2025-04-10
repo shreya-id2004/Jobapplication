@@ -16,7 +16,7 @@ router.post('/signup',async(req,res)=>{
     req.login(regUser , (err)=>{
         if(err) return next(err);
         req.flash('success','Welcome');
-        res.redirect('/');
+        res.redirect('/user/login');
     })
 });
 
