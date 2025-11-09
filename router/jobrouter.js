@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+const { getDashboard } = require('../controllers/jobController');
 const job = require('../module/jobapp.js');
 const {isLoggedIn} = require('../middleware');
  
@@ -17,28 +18,51 @@ router.get("/", isLoggedIn, async (req, res) => {
     
 });
 
+router.get('/dashboard',isLoggedIn , getDashboard);
+
 router.get('/add', isLoggedIn,(req, res) => {
     res.render('add.ejs');
 });
 
-router.post('/add', isLoggedIn,async(req, res) => {
-    try{
-        const { jobname, company, link, deadline } = req.body;
-        const newJob = new job({
-            jobname , company, link,
-            deadline : deadline ? new Date(deadline) : null,
+router.post('/add', async (req, res) => {
+    try {
+        const {
+            company,
+            position,
+            jobLocation,
+            jobType,
+            status,
+            link,
+            deadline,
+            notes
+        } = req.body;
+
+        // Check required fields
+        if (!position || !jobLocation) {
+            return res.status(400).render('add', {
+                error: 'Position and Location are required'
+            });
+        }
+
+        const jobdata = new job({
+            company,
+            position,
+            jobLocation,
+            jobType: jobType || 'full-time',
+            status: status || 'pending',
+            link,
+            deadline,
+            notes,
             user: req.user._id
         });
-        await newJob.save();
-        req.flash('success', 'Job added successfully!')
-        res.redirect('/');
+
+        await jobdata.save();
+        return res.redirect('/');
+
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).render('add', { error: 'Error adding job' });
     }
-    catch(err){
-        console.log(err);
-        req.flash('error', 'Failed to add job');
-        res.redirect('/');
-    }
-    
 });
 
 router.get('/edit/:id', isLoggedIn,async (req, res) => {
@@ -60,8 +84,8 @@ router.get('/edit/:id', isLoggedIn,async (req, res) => {
 router.post('/edit/:id',  isLoggedIn ,async(req, res) => {
     try{
         const { id } = req.params;
-        const { jobname, link, deadline } = req.body;
-        await job.findByIdAndUpdate(id, { jobname, link, deadline });
+        const { link, deadline } = req.body;
+        await job.findByIdAndUpdate(id, {link, deadline });
         req.flash('success', 'Job updated successfully!')
         res.redirect('/');
     }
@@ -83,6 +107,12 @@ router.get('/delete/:id',  isLoggedIn, async(req, res) => {
         res.redirect('/');
     }
 });
+
+router.get('/delete-all-jobs', async (req, res) => {
+    const result = await job.deleteMany({});
+    res.json({ deleted: result.deletedCount });
+});
+
 
 router.post("/update-notes/:id" ,isLoggedIn, async(req,res)=>{
     try{

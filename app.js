@@ -25,12 +25,17 @@ store.on("error",()=>{
     console.log("Mongo session store error");
 });
 
-app.use(session({
+app.use(
+    session({
     store :store,
     secret: 'secret',
     resave: false,
-    saveUninitialized: true
-}))
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+     },
+    })
+)
 app.use(flash());
 
 const path = require('path');
@@ -70,59 +75,6 @@ app.use('/', jobRouter);
 
 const userRouter = require('./router/userrouter.js');
 app.use('/user',userRouter);
-
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'shreyaravisha2004@gmail.com',
-        pass: 'ojvf omtx bchj yodt'
-    }
-})
-
-const sendEmailReminder = (User, job) => {
-    const mailOptions = {
-        from: 'shreyaravisha2004@gmail.com',
-        to: User.email,
-        subject: `Reminder: ${job.jobname} Deadline Approaching`,
-        html: `
-            <h2>Job Application Reminder</h2>
-            <p>Hi ${user.username},</p>
-            <table border="1">
-                <tr><td>Job</td><td>${job.jobname}</td></tr>
-                <tr><td>Company</td><td>${job.company}</td></tr>
-                <tr><td>Deadline</td><td>${job.deadline}</td></tr>
-            </table>
-            <p>Apply soon!</p>
-        `
-    };
-    transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-            console.log('Error sending email:', err);
-        }
-        else {
-            console.log('Email sent: ' + info.response);
-        }
-    })
-}
-
-setInterval(() => {
-    console.log("Checking jobs for upcoming deadlines...");
-    const today = new Date();
-    job.find({}).then(jobs=>{
-        jobs.forEach(job => {
-            const daysLeft = (new Date(job.deadline) - today) / (1000 * 60 * 60 * 24);
-            console.log(`Job: ${job.jobname}, Days Left: ${Math.ceil(daysLeft)}`);
-            if (daysLeft <= 2) { // Send email 1 day before the deadline
-                sendEmailReminder(job);
-            }
-        })
-    })
-}, 24 * 60 * 60 * 1000); // Check every 24 hours
-
-
-app.get('/progress', (req, res) => {
-    res.render('progress.ejs');
-})
 
 app.listen(8080, () => {
     console.log("Server is lisengin");

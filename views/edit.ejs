@@ -12,8 +12,6 @@
     <div class="box">
         <h1>Edit the Job</h1>
         <form action="/edit/<%=job.id%>" method="post">
-            <label for="jobname">Job Position:</label>
-            <input type="text" name="jobname"  value="<%= job.jobname %>"><br>
             <label for="link">Job Link:</label>
             <input type="url" id="link" name="link" value="<%= job.link %>"><br>
             <label for="deadline">Deadline:</label>

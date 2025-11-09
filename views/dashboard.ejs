@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  
+  <!-- Your existing CSS
+  <link rel="stylesheet" href="/css/style.css"> -->
+  
+  <!-- New dashboard CSS -->
+  <link rel="stylesheet" href="/css/dashboard.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  
+
+ 
+  
+  <div class="dashboard-container">
+    
+    <!-- Page Header -->
+    <div class="dashboard-header">
+      <h1>Job Application Dashboard</h1>
+      <p>Track your job search progress</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      
+      <!-- Pending Card -->
+      <div class="stat-card pending-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <h3><%= status.pending %></h3>
+          <p>Pending Applications</p>
+        </div>
+      </div>
+
+      <!-- Interview Card -->
+      <div class="stat-card interview-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <h3><%= status.interview %></h3>
+          <p>Interviews Scheduled</p>
+        </div>
+      </div>
+
+      <!-- Declined Card -->
+      <div class="stat-card declined-card">
+        <div class="stat-icon">❌</div>
+        <div class="stat-info">
+          <h3><%= status.declined %></h3>
+          <p>Applications Declined</p>
+        </div>
+      </div>
+
+      <!-- Total Card -->
+      <div class="stat-card total-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <h3><%= status.total %></h3>
+          <p>Total Applications</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chart Section -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <h2>Monthly Applications</h2>
+        <div class="chart-controls">
+          <button id="barChartBtn" class="chart-btn active">Bar Chart</button>
+          <button id="lineChartBtn" class="chart-btn">Area Chart</button>
+        </div>
+      </div>
+      
+      <div class="chart-container">
+        <canvas id="applicationChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="/add" class="btn btn-primary">Add New Job</a>
+      <a href="/" class="btn btn-secondary">View All Jobs</a>
+    </div>
+
+  </div>
+
+  <!-- Chart JavaScript -->
+  <script>
+    // Get data from server
+    const chartData = <%- JSON.stringify(chartData) %>;
+    console.log('chartData:', JSON.stringify(chartData));
+
+    
+    // Extract labels and values
+    const labels = chartData.map(item => item.month);
+    const values = chartData.map(item => item.count);
+
+    // Get canvas element
+    const ctx = document.getElementById('applicationChart').getContext('2d');
+    let myChart = null;
+
+    // Function to create bar chart
+    function createBarChart() {
+      if (myChart) myChart.destroy();
+      
+      myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Applications',
+            data: values,
+            backgroundColor: '#2cb1bc',
+            borderColor: '#2cb1bc',
+            borderWidth: 1,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Function to create line/area chart
+    function createLineChart() {
+      if (myChart) myChart.destroy();
+      
+      myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Applications',
+            data: values,
+            backgroundColor: 'rgba(44, 177, 188, 0.2)',
+            borderColor: '#2cb1bc',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+
+    // Initial chart (bar)
+    createBarChart();
+
+    // Toggle buttons
+    document.getElementById('barChartBtn').addEventListener('click', function() {
+      this.classList.add('active');
+      document.getElementById('lineChartBtn').classList.remove('active');
+      createBarChart();
+    });
+
+    document.getElementById('lineChartBtn').addEventListener('click', function() {
+      this.classList.add('active');
+      document.getElementById('barChartBtn').classList.remove('active');
+      createLineChart();
+    });
+  </script>
+
+</body>
+</html>

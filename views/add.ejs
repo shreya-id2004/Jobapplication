@@ -1,24 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add Job</title>
     <link rel="stylesheet" href="/add.css">
 </head>
-
 <body>
-    <div class="box">
-        <h1>Adding the Job</h1>
-        <form action="/add" method="post">
-            <input type="text" name="jobname" placeholder="job Name"><br>
-            <input type="text" name="company" placeholder="company Name" /><br />
-            <input type="text" name="link" placeholder="Enter you link" /><br />
-            <input type="date" name="deadline" placeholder="Enter data" /><br>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
-</body>
 
+    <div class="container">
+        <div class="form-box">
+            <h1>Add New Job Application</h1>
+            <p class="form-subtitle">Fill in the details of your job application</p>
+
+            <form action="/add" method="post" class="add-job-form">
+
+                <!-- Company Name -->
+                <div class="form-group">
+                    <label for="company">Company Name</label>
+                    <input 
+                        type="text" 
+                        id="company"
+                        name="company" 
+                        placeholder="e.g., Google, Microsoft, Amazon"
+                        required
+                    >
+                </div>
+
+                <!-- Position (Title) -->
+                <div class="form-group">
+                    <label for="position">Position Title</label>
+                    <input 
+                        type="text" 
+                        id="position"
+                        name="position" 
+                        placeholder="e.g., Senior Developer, Junior Engineer"
+                        required
+                    >
+                </div>
+
+                <!-- Job Location -->
+                <div class="form-group">
+                    <label for="jobLocation">Job Location</label>
+                    <input 
+                        type="text" 
+                        id="jobLocation"
+                        name="jobLocation" 
+                        placeholder="e.g., Mumbai, Remote, New York"
+                        value="my city"
+                        required
+                    >
+                </div>
+
+                <!-- Job Type -->
+                <div class="form-group">
+                    <label for="jobType">Job Type</label>
+                    <select id="jobType" name="jobType" required>
+                        <option value="">-- Select Job Type --</option>
+                        <option value="full-time">Full-time</option>
+                        <option value="part-time">Part-time</option>
+                        <option value="remote">Remote</option>
+                        <option value="internship">Internship</option>
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div class="form-group">
+                    <label for="status">Application Status</label>
+                    <select id="status" name="status" required>
+                        <option value="pending">Pending</option>
+                        <option value="interview">Interview Scheduled</option>
+                        <option value="declined">Declined</option>
+                    </select>
+                </div>
+
+                <!-- Job Posting Link -->
+                <div class="form-group">
+                    <label for="link">Job Posting Link</label>
+                    <input 
+                        type="url" 
+                        id="link"
+                        name="link" 
+                        placeholder="https://example.com/job-posting"
+                    >
+                </div>
+
+                <!-- Application Deadline -->
+                <div class="form-group">
+                    <label for="deadline">Application Deadline</label>
+                    <input 
+                        type="date" 
+                        id="deadline"
+                        name="deadline"
+                    >
+                </div>
+
+                <!-- Notes -->
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea 
+                        id="notes"
+                        name="notes" 
+                        placeholder="Add any additional notes or important details"
+                        rows="4"
+                    ></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Add Job Application</button>
+                    <a href="/" class="btn btn-secondary">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    
+</body>
 </html>

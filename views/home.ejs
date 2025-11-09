@@ -12,58 +12,68 @@
     <h1>Job Application</h1>
 
     <% if (messages.success) { %>
-        <div class="alert success" id="flashMessage"><%= messages.success %></div>
-    <% } %>
-    
-    <% if (messages.error) { %>
-        <div class="alert error" id="flashMessage"><%= messages.error %></div>
-    <% } %>
+        <div class="alert success" id="flashMessage">
+            <%= messages.success %>
+        </div>
+        <% } %>
 
-    <div class="auth-buttons">
-        <button class="btn"><a href="/user/login">Log in</a></button>
-        <button class="btn"><a href="/user/signup">Sign up</a></button>
-        <button class="btn"><a href="/user/logout">Log out</a></button>
-    </div>
-    
-    <div class="search">
-        <input type="text" id="searchBox" placeholder="Search Jobs..." onkeyup="searchJobs()">
-        <select id="statusFilter" onchange="filterJobs()">
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Selected">Selected</option>
-            <option value="Rejected">Rejected</option>
-        </select>
-    </div>
-    
-    <div class="table">
-        <table>
-            <tr>
-                <th>Job Position</th>
-                <th>Company</th>
-                <th>Applied</th>
-                <th>Days Left</th>
-                <th>Status</th>
-                <th>Link</th>
-                <th>Action</th>
-                <th>Notes</th>
-            </tr>
+            <% if (messages.error) { %>
+                <div class="alert error" id="flashMessage">
+                    <%= messages.error %>
+                </div>
+                <% } %>
 
-            <% jobs.forEach((job,index)=> { %>
-                <tr id="job-<%=job._id %>">
+                    <div class="auth-buttons">
+                        <button class="btn"><a href="/user/login">Log in</a></button>
+                        <button class="btn"><a href="/user/signup">Sign up</a></button>
+                        <button class="btn"><a href="/user/logout">Log out</a></button>
+                    </div>
 
-                    <td><span class="job-text">
-                            <%= job.jobname %>
-                        </span></td>
+                    <div class="search">
+                        <input type="text" id="searchBox" placeholder="Search Jobs..." onkeyup="searchJobs()">
+                        <select id="statusFilter" onchange="filterJobs()">
+                            <option value="all">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="interview">Interview</option>
+                            <option value="declined">Declined</option>
+                        </select>
+                    </div>
 
-                    <td><span class="job-text">
-                            <%=job.company%>
-                        </span></td>
-                        <td>
-                            <span id="time-<%= job._id %>">
-                                <%= new Date(job.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
-                            </span>
-                        </td>
+                    <div class="table">
+                        <table>
+                            <tr>
+                                <th>Company</th>
+                                <th>Position</th>
+                                <th>Applied</th>
+                                <th>Days Left</th>
+                                <th>Status</th>
+                                <th>Link</th>
+                                <th>Actions</th>
+                                <th>Notes</th>
+                            </tr>
 
+                            <% jobs.forEach((job,index)=> { %>
+                                <tr id="job-<%=job._id %>">
+
+
+                                    <td>
+                                        <span class="job-text">
+                                            <%=job.company%>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="job-text">
+                                            <%= job.position %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span id="time-<%= job._id %>">
+                                            <%= new Date(job.createdAt).toLocaleDateString('en-US', { month: 'short' ,
+                                                day: 'numeric' , year: 'numeric' }) %>
+                                        </span>
+                                    </td>
+
+                                    <!-- Days Left Until Deadline -->
                         <td>
                             <% 
                                 let deadlineDate = job.deadline ? new Date(job.deadline) : null;
@@ -72,39 +82,59 @@
                                 let daysLeft = deadlineDate ? Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) : null;
                             %>
                             <span id="days-<%= job._id %>">
-                                <%= deadlineDate ? (daysLeft > 0 ? daysLeft + " days left" : "Deadline passed") : "No deadline" %>
+                                <% if (deadlineDate) { %>
+                                    <% if (daysLeft > 0) { %>
+                                        <%= daysLeft %> days left
+                                    <% } else { %>
+                                        Deadline passed
+                                    <% } %>
+                                <% } else { %>
+                                    No deadline
+                                <% } %>
                             </span>
                         </td>
-                    <td>
+                                    <td>
+                                        <select onchange="updateStatus(this, '<%= job._id %>')" class="status-select">
+                                            <option value="pending" <%=job.status==='pending' ? 'selected' : '' %>>
+                                                Pending
+                                            </option>
+                                            <option value="interview" <%=job.status==='interview' ? 'selected' : '' %>>
+                                                Interview
+                                            </option>
+                                            <option value="declined" <%=job.status==='declined' ? 'selected' : '' %>>
+                                                Declined
+                                            </option>
+                                        </select>
+                                    </td>
 
-                        <select onchange="updateStatus(this, '<%= job._id %>')">
-                            <option class="pending" value="Pending" <%= job.status === 'Pending' ? 'selected' : '' %>>Pending</option>
-                            <option class="selected" value="Selected" <%= job.status === 'Selected' ? 'selected' : '' %>>Selected</option>
-                            <option class="rejected" value="Rejected" <%= job.status === 'Rejected' ? 'selected' : '' %>>Rejected</option>
-                        </select>
-                    </td>
+                                    <td>
+                                        <% if (job.link) { %>
+                                            <button class="btn">
+                                                <a href="<%= job.link %>" target="_blank">Link</a>
+                                            </button>
+                                            <% } else { %>
+                                                <span>No link</span>
+                                                <% } %>
+                                    </td>
 
-                    <td><button class="btn"><a href="<%= job.link %>">Link</a></button></td>
+                                    <td>
+                                        <button class="btn"><a href="/edit/<%=job._id %>">Edit</a></button>
+                                        <button class="btn"><a href="/delete/<%= job._id %>">Delete</a></button>
+                                    </td>
 
-                    <td>
-                        <button class="btn"><a href="/edit/<%=job._id %>">Edit</a></button>
-                        <button class="btn"><a href="/delete/<%= job._id %>">Delete</a></button>
-                    </td>
-
-                    <td>
-                        <textarea id="notes-<%= job._id %>" class="notes-input"
-                        placeholder="Add notes..." 
-                        onblur="updateNotes('<%= job._id %>')">
+                                    <td>
+                                        <textarea id="notes-<%= job._id %>" class="notes-input"
+                                            placeholder="Add notes..." onblur="updateNotes('<%= job._id %>')">
                         <%= job.notes %></textarea>
-                    </td>
+                                    </td>
 
-                </tr>
-                <% }); %>
+                                </tr>
+                                <% }); %>
 
-        </table>
-        <button class="btn "id="btn1"><a href="/add">Add Job</a></button>
-    </div>
-    <script src="/script.js"></script>
+                        </table>
+                        <button class="btn " id="btn1"><a href="/add">Add Job</a></button>
+                    </div>
+                    <script src="/script.js"></script>
 </body>
 
 </html>
