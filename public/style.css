@@ -12,6 +12,87 @@ h1 {
     margin-bottom :20px;
     font-weight:600;
 }
+
+/*  PAGE HEADER */
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--text-light);
+    font-size: 1rem;
+}
+/* .alert {
+    padding: 15px;
+    margin: 10px auto;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    color: white;
+    opacity:1;
+    transition : opacity 0.5s ease;
+}
+
+.alert.success {
+    background-color: #4CAF50;
+}
+
+.alert.error {
+    background-color: #f44336;
+}
+
+.alert.fade-out {
+    opacity: 0;
+} */
+/* ALERTS */
+.alert {
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.alert-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.alert-success {
+    background-color: var(--success-color);
+    color: rgb(6, 241, 21);
+}
+
+.alert-error {
+    background-color: var(--error-color);
+    color: rgb(243, 3, 3);
+}
 .search{
     text-align:right;
     margin-bottom:20px;
@@ -45,6 +126,101 @@ h1 {
 .search select:focus {
     border-color: #ff0095;
 }
+
+/* ===== FILTER SECTION ===== */
+.filter-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+}
+
+.search-container {
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 0, 149, 0.1);
+}
+
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-select {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* ===== STATS OVERVIEW ===== */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-box {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-box.pending .stat-number { color: #ff9800; }
+.stat-box.interview .stat-number { color: #2196F3; }
+.stat-box.declined .stat-number { color: #f44336; }
+.stat-box.total .stat-number { color: var(--primary-color); }
 .table{
     background-color: #fff;
     text-align  :center;
@@ -114,32 +290,6 @@ select {
 .pending {
     color: black;
     font-weight: normal;
-}
-.alert {
-    padding: 15px;
-    margin: 10px auto;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    width: 100%;
-    max-width: 500px;
-    margin: auto;
-    color: white;
-    opacity:1;
-    transition : opacity 0.5s ease;
-}
-
-.alert.success {
-    background-color: #4CAF50;
-}
-
-.alert.error {
-    background-color: #f44336;
-}
-
-.alert.fade-out {
-    opacity: 0;
 }
 
 .notes-input {

@@ -5,31 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
-    <h1>Job Application</h1>
+    <%- include('partials/navebar') %>
 
-    <% if (messages.success) { %>
-        <div class="alert success" id="flashMessage">
-            <%= messages.success %>
+    <div class="page-header">
+            <h1>Job Application Tracker</h1>
+            <p class="subtitle">Track all your job applications in one place</p>
         </div>
+
+        <!-- Alert message -->
+    <% if (messages && messages.success) { %>
+            <div class="alert alert-success" id="flashMessage">
+                <span class="alert-icon">✓</span>
+                <%= messages.success %>
+            </div>
         <% } %>
 
-            <% if (messages.error) { %>
-                <div class="alert error" id="flashMessage">
-                    <%= messages.error %>
-                </div>
-                <% } %>
+        <% if (messages && messages.error) { %>
+            <div class="alert alert-error" id="flashMessage">
+                <span class="alert-icon">✕</span>
+                <%= messages.error %>
+            </div>
+        <% } %>
 
-                    <div class="auth-buttons">
+                    <!-- <div class="auth-buttons">
                         <button class="btn"><a href="/user/login">Log in</a></button>
                         <button class="btn"><a href="/user/signup">Sign up</a></button>
                         <button class="btn"><a href="/user/logout">Log out</a></button>
-                    </div>
+                    </div> -->
 
-                    <div class="search">
+                    <div class="search filter-controls">
                         <input type="text" id="searchBox" placeholder="Search Jobs..." onkeyup="searchJobs()">
                         <select id="statusFilter" onchange="filterJobs()">
                             <option value="all">All</option>
@@ -37,7 +46,37 @@
                             <option value="interview">Interview</option>
                             <option value="declined">Declined</option>
                         </select>
+
+                        <button class="btn btn-primary" onclick="location.href='/add'">
+                    ➕ Add New Job
+                </button>
+
                     </div>
+
+                    <!-- Stats Overview -->
+        <% 
+            let pendingCount = jobs.filter(j => j.status === 'pending').length;
+            let interviewCount = jobs.filter(j => j.status === 'interview').length;
+            let declinedCount = jobs.filter(j => j.status === 'declined').length;
+        %>
+        <div class="stats-overview">
+            <div class="stat-box pending">
+                <div class="stat-number"><%= pendingCount %></div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-box interview">
+                <div class="stat-number"><%= interviewCount %></div>
+                <div class="stat-label">Interview</div>
+            </div>
+            <div class="stat-box declined">
+                <div class="stat-number"><%= declinedCount %></div>
+                <div class="stat-label">Declined</div>
+            </div>
+            <div class="stat-box total">
+                <div class="stat-number"><%= jobs.length %></div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
 
                     <div class="table">
                         <table>
@@ -135,6 +174,17 @@
                         <button class="btn " id="btn1"><a href="/add">Add Job</a></button>
                     </div>
                     <script src="/script.js"></script>
+                    <script>
+        // Auto-hide alert messages after 5 seconds
+        const alert = document.getElementById('flashMessage');
+        if (alert) {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        }
+    </script>
 </body>
 
 </html>
